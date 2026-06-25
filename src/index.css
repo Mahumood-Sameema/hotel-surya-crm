@@ -1,0 +1,451 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-red-light: #C81B2B;
+  --color-brand-red: #B71C1C;
+  --color-brand-red-dark: #7F1010;
+  --color-brand-red-bg: #FDF2F2;
+
+  --color-brand-gold-light: #F8C84E;
+  --color-brand-gold: #F5B921;
+  --color-brand-gold-dark: #E5A818;
+  --color-brand-gold-bg: #FFFDF5;
+
+  --color-brand-dark: #1E293B;
+  --color-brand-muted: #64748B;
+  --color-brand-bg: #F8FAFC;
+  --color-brand-border: #E2E8F0;
+
+  --font-sans: "Outfit", "Inter", "system-ui", "sans-serif";
+  --font-serif: "Outfit", "Inter", "system-ui", "sans-serif";
+
+  --shadow-premium: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 8px -1px rgba(0, 0, 0, 0.03);
+  --shadow-premium-hover: 0 12px 30px -4px rgba(0, 0, 0, 0.08), 0 4px 12px -2px rgba(0, 0, 0, 0.05);
+
+  /* Map missing non-standard utility colors */
+  --color-red-650: #B71C1C;
+  --color-red-750: #B71C1C;
+  --color-red-850: #9B1515;
+  --color-red-900: #7F1010;
+  --color-red-950: #4a0606;
+  --color-green-650: #166534;
+  --color-slate-450: #64748B;
+  --color-slate-605: #475569;
+  --color-slate-650: #475569;
+  --color-gray-650: #4B5563;
+  --color-gray-850: #1F2937;
+  --color-amber-850: #92400E;
+}
+
+body {
+  background-color: var(--color-brand-bg);
+  color: var(--color-brand-dark);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom premium transitions and styles */
+.transition-premium {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background-color: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: #94a3b8;
+}
+
+/* Keyframes for animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Shimmer placeholder loading state */
+.shimmer {
+  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+  background-size: 200% 100%;
+  animation: loading-shimmer 1.5s infinite;
+}
+
+@keyframes loading-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* ==========================================================================
+   BUTTON CONTRACT & CONTRAST standards (Surya Residency Branding)
+   ========================================================================== */
+
+/* 1. Primary Buttons */
+button.bg-red-800,
+button.bg-red-850,
+button.bg-red-900,
+button.bg-brand-red,
+button.bg-\[\#B71C1C\],
+.btn-primary {
+  background-color: #B71C1C !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+  font-weight: 600 !important;
+  transition: background-color 0.2s ease-in-out !important;
+}
+button.bg-red-800:hover:not(:disabled),
+button.bg-red-850:hover:not(:disabled),
+button.bg-red-900:hover:not(:disabled),
+button.bg-brand-red:hover:not(:disabled),
+button.bg-\[\#B71C1C\]:hover:not(:disabled),
+.btn-primary:hover:not(:disabled) {
+  background-color: #9B1515 !important;
+  color: #ffffff !important;
+}
+button.bg-red-800:disabled,
+button.bg-red-850:disabled,
+button.bg-red-900:disabled,
+button.bg-brand-red:disabled,
+button.bg-\[\#B71C1C\]:disabled,
+.btn-primary:disabled {
+  background-color: #cbd5e1 !important;
+  color: #94a3b8 !important;
+  opacity: 0.7 !important;
+  cursor: not-allowed !important;
+}
+
+/* 2. Secondary Buttons */
+button.bg-brand-gold,
+button.bg-\[\#FBC02D\],
+button.bg-yellow-500,
+button.bg-amber-500,
+.btn-secondary {
+  background-color: #FBC02D !important;
+  color: #212121 !important;
+  border-color: transparent !important;
+  font-weight: 600 !important;
+  transition: background-color 0.2s ease-in-out !important;
+}
+button.bg-brand-gold:hover:not(:disabled),
+button.bg-\[\#FBC02D\]:hover:not(:disabled),
+button.bg-yellow-500:hover:not(:disabled),
+button.bg-amber-500:hover:not(:disabled),
+.btn-secondary:hover:not(:disabled) {
+  background-color: #F9A825 !important;
+  color: #212121 !important;
+}
+
+/* 3. Outline Buttons */
+button.border-red-200,
+button.border-red-500,
+button.border-\[\#B71C1C\],
+button.border-brand-red,
+button.text-red-750.border,
+button.text-red-650.border,
+.btn-outline {
+  border: 1px solid #B71C1C !important;
+  color: #B71C1C !important;
+  background-color: transparent !important;
+  font-weight: 600 !important;
+  transition: all 0.2s ease-in-out !important;
+}
+button.border-red-200:hover:not(:disabled),
+button.border-red-500:hover:not(:disabled),
+button.border-\[\#B71C1C\]:hover:not(:disabled),
+button.border-brand-red:hover:not(:disabled),
+button.text-red-750.border:hover:not(:disabled),
+button.text-red-650.border:hover:not(:disabled),
+.btn-outline:hover:not(:disabled) {
+  background-color: #B71C1C !important;
+  color: #ffffff !important;
+}
+
+/* 4. Ghost Buttons */
+button.text-\[\#B71C1C\],
+button.text-brand-red,
+.btn-ghost {
+  color: #B71C1C !important;
+  background-color: transparent !important;
+  border-color: transparent !important;
+  font-weight: 600 !important;
+  transition: background-color 0.2s ease-in-out !important;
+}
+button.text-\[\#B71C1C\]:hover:not(:disabled),
+button.text-brand-red:hover:not(:disabled),
+.btn-ghost:hover:not(:disabled) {
+  background-color: rgba(183, 28, 28, 0.08) !important;
+}
+
+/* 5. Danger Buttons */
+button.bg-red-600,
+button.bg-red-500,
+button.bg-red-650,
+button.bg-orange-600,
+button.bg-red-700,
+.btn-danger {
+  background-color: #D32F2F !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+  font-weight: 600 !important;
+  transition: background-color 0.2s ease-in-out !important;
+}
+button.bg-red-600:hover:not(:disabled),
+button.bg-red-500:hover:not(:disabled),
+button.bg-red-650:hover:not(:disabled),
+button.bg-orange-600:hover:not(:disabled),
+button.bg-red-700:hover:not(:disabled),
+.btn-danger:hover:not(:disabled) {
+  background-color: #C62828 !important;
+  color: #ffffff !important;
+}
+
+/* 6. Standard/Cancel/Neutral Outline Buttons */
+button.border-slate-200,
+button.border-gray-300,
+button.bg-white.text-gray-600,
+button.bg-white.text-slate-650 {
+  border: 1px solid #cbd5e1 !important;
+  color: #475569 !important;
+  background-color: #ffffff !important;
+  font-weight: 600 !important;
+  transition: all 0.2s ease-in-out !important;
+}
+button.border-slate-200:hover:not(:disabled),
+button.border-gray-300:hover:not(:disabled),
+button.bg-white.text-gray-600:hover:not(:disabled),
+button.bg-white.text-slate-650:hover:not(:disabled) {
+  background-color: #f1f5f9 !important;
+  color: #1e293b !important;
+}
+
+/* ==========================================================================
+   Surya Residency Global PMS UI/UX Standardizations
+   ========================================================================== */
+
+/* 1. Global Page Header Layout Component */
+.pms-page-header {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  border-bottom: 1px solid var(--color-brand-border);
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+}
+@media (min-width: 640px) {
+  .pms-page-header {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+.pms-page-header-title {
+  font-family: var(--font-sans) !important;
+  font-size: 1.5rem !important; /* text-2xl */
+  font-weight: 800 !important;
+  color: #1e293b !important; /* text-slate-800 */
+  letter-spacing: -0.025em !important;
+}
+.pms-page-header-subtitle {
+  font-size: 0.75rem !important; /* text-xs */
+  color: #64748b !important; /* text-slate-500 */
+  margin-top: 0.25rem;
+}
+
+/* 2. Global Table Standardizations */
+table {
+  width: 100%;
+  border-collapse: collapse !important;
+}
+thead tr {
+  background-color: #f8fafc !important; /* bg-slate-50 */
+  border-bottom: 1px solid #e2e8f0 !important; /* border-slate-200 */
+}
+th {
+  padding: 0.75rem 1rem !important;
+  color: #475569 !important; /* text-slate-600 */
+  font-weight: 700 !important;
+  font-size: 0.6875rem !important; /* text-[11px] */
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+}
+tbody tr {
+  border-bottom: 1px solid #f1f5f9 !important; /* border-slate-100 */
+  transition: background-color 0.15s ease-in-out;
+}
+tbody tr:hover {
+  background-color: #f8fafc !important;
+}
+td {
+  padding: 0.875rem 1rem !important;
+  font-size: 0.75rem !important; /* text-xs */
+  color: #334155 !important; /* text-slate-700 */
+  vertical-align: middle;
+}
+
+/* 3. Global Card System Standardizations */
+.pms-card,
+.bg-white.rounded-xl.border.shadow-premium {
+  background-color: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 0.75rem !important; /* 12px rounded-xl */
+  padding: 1.5rem !important; /* 24px p-6 */
+  box-shadow: var(--shadow-premium) !important;
+  transition: box-shadow 0.2s ease-in-out !important;
+}
+.pms-card:hover,
+.bg-white.rounded-xl.border.shadow-premium:hover {
+  box-shadow: var(--shadow-premium-hover) !important;
+}
+
+/* 4. Global Form Field Standardization */
+input:not([type="checkbox"]):not([type="radio"]),
+select,
+textarea {
+  height: 2.5rem !important; /* 40px standard heights */
+  border-radius: 0.375rem !important; /* rounded-md */
+  border: 1px solid #cbd5e1 !important; /* border-slate-300 */
+  font-size: 0.75rem !important; /* text-xs */
+  color: #1e293b !important;
+  background-color: #ffffff;
+  outline: none !important;
+  transition: all 0.2s ease-in-out !important;
+}
+/* Allow Tailwind classes (like pl-9/pl-10/pr-4) to override global default padding */
+:where(input:not([type="checkbox"]):not([type="radio"]), select, textarea) {
+  padding: 0.5rem 0.75rem;
+}
+/* Explicit overrides to resolve icon overlap by allowing horizontal padding classes to override global default styles */
+input.pl-8 { padding-left: 2rem !important; }
+input.pl-9 { padding-left: 2.25rem !important; }
+input.pl-10 { padding-left: 2.5rem !important; }
+input.pr-3 { padding-right: 0.75rem !important; }
+input.pr-4 { padding-right: 1rem !important; }
+input.pr-10 { padding-right: 2.5rem !important; }
+textarea {
+  height: auto !important; /* allow multi-line height */
+}
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: #B71C1C !important;
+  box-shadow: 0 0 0 2px rgba(183, 28, 28, 0.15) !important;
+}
+label {
+  font-size: 0.75rem !important; /* text-xs */
+  font-weight: 700 !important;
+  color: #475569 !important; /* text-slate-605 */
+  margin-bottom: 0.25rem !important;
+  display: inline-block;
+}
+
+/* 5. Global Status Badges (Uniform pill layout) */
+.status-badge,
+.bg-green-105,
+.bg-red-105,
+.bg-amber-105,
+.bg-blue-105,
+.bg-orange-105,
+.bg-yellow-105,
+.bg-green-50,
+.bg-red-50,
+.bg-blue-50,
+.bg-amber-50,
+.bg-orange-50 {
+  font-size: 0.6875rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  padding: 0.25rem 0.75rem !important;
+  border-radius: 9999px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  border-width: 1px !important;
+}
+
+/* 6. Standardized Button Sizing & Variants */
+button,
+.btn {
+  height: 2.5rem; /* Standardize height to 40px */
+  padding: 0 1.25rem;
+  font-size: 0.75rem !important; /* text-xs */
+  border-radius: 0.375rem !important; /* rounded-md */
+  font-weight: 600 !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  transition: all 0.2s ease-in-out;
+}
+/* Exceptions for header toggle, icon buttons, inline small buttons */
+button.p-2, button.p-1, button.p-1\.5, button.p-3, button.rounded-full, button.h-8, button.w-8, button.h-6, button.w-6,
+.calendar-cell button, .quick-actions button {
+  height: auto;
+  padding: inherit;
+  display: inline-block;
+}
+
+/* Row Action Buttons in Tables */
+table button,
+.btn-table {
+  height: 1.75rem !important; /* 28px standard row actions */
+  padding: 0 0.5rem !important;
+  font-size: 0.6875rem !important; /* text-[11px] */
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.25rem !important;
+  border-radius: 0.25rem !important;
+  font-weight: 600 !important;
+}
+
+/* 7. Global Empty State Standardization */
+.pms-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 3rem 1.5rem;
+  background-color: #ffffff;
+  border: 1px dashed #cbd5e1;
+  border-radius: 0.75rem;
+}
+.pms-empty-state-title {
+  font-size: 0.875rem !important;
+  font-weight: 700 !important;
+  color: #1e293b !important;
+  margin-top: 1rem;
+}
+.pms-empty-state-subtitle {
+  font-size: 0.75rem !important;
+  color: #64748b !important;
+  margin-top: 0.25rem;
+  margin-bottom: 1.25rem;
+  max-w: 24rem;
+}
+
+/* 8. Global Modal / Dialog Standardizations */
+.fixed.inset-0.z-50 {
+  background-color: rgba(15, 23, 42, 0.4) !important; /* Slate backdrop color */
+  backdrop-filter: blur(4px) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow-y: auto !important;
+}
+
