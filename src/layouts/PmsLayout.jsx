@@ -258,7 +258,7 @@ export default function PmsLayout({ children }) {
 
       {/* 1. SIDEBAR */}
       <aside
-        className={`hidden md:flex flex-col shrink-0 bg-[#B71C1C] text-white transition-all duration-300 border-r border-red-800 h-full overflow-y-auto overscroll-contain ${collapsed ? "w-16" : "w-60"
+        className={`flex flex-col shrink-0 bg-[#B71C1C] text-white transition-all duration-300 border-r border-red-800 h-full overflow-y-auto overscroll-contain ${collapsed ? "w-16" : "w-60"
           }`}
       >
         <div className="h-14 flex items-center justify-between px-4 border-b border-red-800">
