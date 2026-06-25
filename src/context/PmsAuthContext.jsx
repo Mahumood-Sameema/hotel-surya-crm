@@ -9,7 +9,7 @@ import {
   sendPasswordResetEmail
 } from "firebase/auth";
 import { auth, isFirebaseConfigured } from "../firebase/config";
-import { getUserProfile, logAction, bootstrapAdminProfile } from "../services/pmsDbService";
+import { getUserProfile, logAction, bootstrapAdminProfile, getUsers } from "../services/pmsDbService";
 
 const PRIMARY_ADMIN_EMAIL = import.meta.env.VITE_PRIMARY_ADMIN_EMAIL || "admin@suryaresidency.com";
 
@@ -21,6 +21,22 @@ export const PmsAuthProvider = ({ children }) => {
   const [authError, setAuthError] = useState("");
 
   useEffect(() => {
+    if (!auth) {
+      // Mock auth initialization: check localStorage for active session
+      const savedUser = localStorage.getItem("sr_pms_current_user");
+      if (savedUser) {
+        try {
+          setUser(JSON.parse(savedUser));
+        } catch (e) {
+          setUser(null);
+        }
+      } else {
+        setUser(null);
+      }
+      setLoading(false);
+      return;
+    }
+
     // Listen to Firebase Auth state change events
     const unsubscribe = onAuthStateChanged(auth, async (authUser) => {
       setLoading(true);
@@ -92,6 +108,41 @@ export const PmsAuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     setAuthError("");
+    if (!auth) {
+      try {
+        const allUsers = await getUsers();
+        const found = allUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
+        
+        if (!found) {
+          throw new Error("Invalid email or password credentials.");
+        }
+        
+        if (found.status !== "Active") {
+          throw new Error("Your account is not active. Please contact the administrator.");
+        }
+
+        const sessionUser = {
+          userId: found.userId || found.uid,
+          uid: found.userId || found.uid,
+          fullName: found.fullName,
+          email: found.email,
+          phone: found.phone || "",
+          role: found.role,
+          status: found.status,
+          createdAt: found.createdAt
+        };
+        
+        localStorage.setItem("sr_pms_current_user", JSON.stringify(sessionUser));
+        setUser(sessionUser);
+        await logAction(sessionUser, "Login", "Auth", sessionUser.userId, "", "Successful login session start (Mock Mode)");
+        return sessionUser;
+      } catch (error) {
+        console.error("Mock Login failure:", error);
+        setAuthError(error.message);
+        throw error;
+      }
+    }
+
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const authUser = userCredential.user;
@@ -149,10 +200,18 @@ export const PmsAuthProvider = ({ children }) => {
     }
     setUser(null);
     setAuthError("");
-    await signOut(auth);
+    if (auth) {
+      await signOut(auth);
+    } else {
+      localStorage.removeItem("sr_pms_current_user");
+    }
   };
 
   const changeUserPassword = async (currentPassword, newPassword) => {
+    if (!auth) {
+      await logAction(user, "Password Changed", "Auth", user.userId, "", "Password updated successfully (Mock Mode)");
+      return { success: true };
+    }
     if (!auth.currentUser) return { success: false, message: "No active user session." };
 
     try {
@@ -176,7 +235,7 @@ export const PmsAuthProvider = ({ children }) => {
   };
 
   const resetUserPassword = async (email) => {
-    if (!isFirebaseConfigured) {
+    if (!auth) {
       console.log(`[Mock Auth] Password reset email triggered for ${email}`);
       return { success: true, message: "Password reset email triggered (mock mode)." };
     }
