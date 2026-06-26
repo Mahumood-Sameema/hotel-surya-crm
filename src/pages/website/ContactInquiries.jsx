@@ -76,11 +76,13 @@ export default function ContactInquiries() {
   };
 
   const filteredInquiries = inquiries.filter(i => {
-    const name = i.fullName.toLowerCase();
+    const name = (i.fullName || i.name || "").toLowerCase();
+    const phone = i.phone || "";
+    const message = i.message || "";
     const searchMatch = 
       name.includes(searchQuery.toLowerCase()) ||
-      i.phone.includes(searchQuery) ||
-      i.message.toLowerCase().includes(searchQuery.toLowerCase());
+      phone.includes(searchQuery) ||
+      message.toLowerCase().includes(searchQuery.toLowerCase());
 
     const statusMatch = statusFilter === "all" || i.status === statusFilter;
 
@@ -158,7 +160,7 @@ export default function ContactInquiries() {
                 <div className="flex justify-between items-start gap-4">
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                      <h3 className="font-bold text-gray-900 text-sm">{i.fullName}</h3>
+                      <h3 className="font-bold text-gray-900 text-sm">{i.fullName || i.name || "Anonymous"}</h3>
                       <span className={`inline-flex rounded-full border px-2 py-0.5 text-4xs font-semibold ${getStatusBadge(i.status)}`}>
                         {i.status}
                       </span>

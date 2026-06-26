@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { 
   Users, 
   Sparkles, 
-  Crown, 
   TrendingUp,
   MapPin,
   ChevronRight
@@ -92,7 +91,7 @@ export default function GuestReport() {
       </div>
 
       {/* KPI Cards Grid */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         {/* Total Guests */}
         <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm space-y-3">
           <div className="flex justify-between items-start">
@@ -104,20 +103,6 @@ export default function GuestReport() {
           <div>
             <h3 className="text-2xl font-bold text-gray-900">{stats.totalGuests}</h3>
             <p className="text-xs text-gray-500 mt-1">Unique profiles in CRM database</p>
-          </div>
-        </div>
-
-        {/* VIP Guests */}
-        <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm space-y-3">
-          <div className="flex justify-between items-start">
-            <span className="text-2xs font-bold text-gray-400 uppercase tracking-widest">VIP Guest Profiles</span>
-            <div className="rounded-lg bg-amber-50 p-2 text-amber-800">
-              <Crown className="h-4.5 w-4.5" />
-            </div>
-          </div>
-          <div>
-            <h3 className="text-2xl font-bold text-gray-900">{stats.vipGuestsCount}</h3>
-            <p className="text-xs text-gray-500 mt-1">Loyalty accounts labeled VIP</p>
           </div>
         </div>
 

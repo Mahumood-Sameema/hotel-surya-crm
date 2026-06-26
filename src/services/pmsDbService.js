@@ -276,7 +276,8 @@ const seedPmsData = () => {
         type: "Website Booking Request",
         status: "Unread",
         timestamp: new Date().toISOString(),
-        link: "/pms/website/requests"
+        link: "/website/requests",
+        bookingRequestId: "req1"
       }
     ];
     localStorage.setItem(PMS_KEYS.NOTIFICATIONS, JSON.stringify(initialNotifications));
@@ -1136,15 +1137,75 @@ export const getAuditLogs = async () => {
 
 // Notifications Drawer
 export const getNotifications = async () => {
+  let notificationsList = [];
   if (isFirebaseConfigured && db) {
     try {
       const snap = await getDocs(collection(db, "notifications"));
-      return snap.docs.map(d => ({ ...d.data(), id: d.id })).sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
+      notificationsList = snap.docs.map(d => {
+        const data = d.data();
+        let link = data.link || "";
+        if (link.startsWith("/pms")) {
+          link = link.substring(4);
+        }
+        return { ...data, id: d.id, link };
+      });
     } catch (e) {
       console.warn("Firestore get notifications fail:", e);
     }
+  } else {
+    notificationsList = JSON.parse(localStorage.getItem(PMS_KEYS.NOTIFICATIONS)) || [];
+    // Clean up /pms prefix if present in localStorage notifications
+    notificationsList = notificationsList.map(n => {
+      let link = n.link || "";
+      if (link.startsWith("/pms")) {
+        link = link.substring(4);
+      }
+      return { ...n, link };
+    });
   }
-  return JSON.parse(localStorage.getItem(PMS_KEYS.NOTIFICATIONS)) || [];
+
+  // Sync booking requests (Website Booking Requests)
+  let updated = false;
+  try {
+    const bookingRequests = await getBookingRequests();
+    for (const req of bookingRequests) {
+      if (req.status === "Pending") {
+        // We match by either bookingRequestId or guestName in description to prevent duplication
+        const exists = notificationsList.some(
+          n => n.type === "Website Booking Request" && (n.bookingRequestId === req.id || n.description?.includes(req.guestName))
+        );
+
+        if (!exists) {
+          const newNotif = {
+            id: "notif_req_" + req.id,
+            title: "New Website Request",
+            description: `${req.guestName} requested standard/deluxe room for ${req.checkIn}`,
+            type: "Website Booking Request",
+            status: "Unread",
+            timestamp: req.createdAt || new Date().toISOString(),
+            link: `/website/requests`,
+            bookingRequestId: req.id
+          };
+
+          if (isFirebaseConfigured && db) {
+            await addDoc(collection(db, "notifications"), newNotif);
+            notificationsList.push(newNotif);
+          } else {
+            notificationsList.unshift(newNotif);
+            updated = true;
+          }
+        }
+      }
+    }
+  } catch (err) {
+    console.warn("Failed to sync booking request notifications:", err);
+  }
+
+  if (updated && !isFirebaseConfigured) {
+    localStorage.setItem(PMS_KEYS.NOTIFICATIONS, JSON.stringify(notificationsList));
+  }
+
+  return notificationsList.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 };
 
 export const createNotification = async (title, description, type, link = "") => {

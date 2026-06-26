@@ -78,10 +78,11 @@ export default function WebsiteBookingRequests() {
   };
 
   const filteredRequests = requests.filter(r => {
-    const name = r.guestName.toLowerCase();
+    const name = (r.guestName || "").toLowerCase();
+    const phone = r.phone || "";
     const searchMatch = 
       name.includes(searchQuery.toLowerCase()) ||
-      r.phone.includes(searchQuery) ||
+      phone.includes(searchQuery) ||
       (r.bookingRef && r.bookingRef.toLowerCase().includes(searchQuery.toLowerCase()));
 
     const statusMatch = statusFilter === "all" || r.status === statusFilter;
@@ -169,8 +170,8 @@ export default function WebsiteBookingRequests() {
                       {r.bookingRef || `ID-${r.id.slice(0, 5)}`}
                     </td>
                     <td className="px-6 py-4">
-                      <div className="font-semibold text-gray-900">{r.guestName}</div>
-                      <div className="text-3xs text-gray-500 font-mono">{r.phone} | {r.email || "No Email"}</div>
+                      <div className="font-semibold text-gray-900">{r.guestName || "Unknown"}</div>
+                      <div className="text-3xs text-gray-500 font-mono">{r.phone || "No Phone"} | {r.email || "No Email"}</div>
                     </td>
                     <td className="px-6 py-4">
                       <div className="font-semibold text-gray-800">{getRoomTypeName(r.roomTypeId)}</div>

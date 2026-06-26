@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plus, Search, Eye, Download, Star, Award } from "lucide-react";
+import { Plus, Search, Eye, Download, Star } from "lucide-react";
 import { getGuests } from "../../services/pmsDbService";
 import { usePmsAuth } from "../../context/PmsAuthContext";
 
@@ -10,7 +10,7 @@ export default function GuestList() {
 
   const [loading, setLoading] = useState(true);
   const [guests, setGuests] = useState([]);
-  
+
   // Filters
   const [searchQuery, setSearchQuery] = useState("");
   const [tagFilter, setTagFilter] = useState("all");
@@ -45,9 +45,9 @@ export default function GuestList() {
       g.isVip ? "Yes" : "No"
     ]);
 
-    const csvContent = "data:text/csv;charset=utf-8," 
+    const csvContent = "data:text/csv;charset=utf-8,"
       + [headers.join(","), ...rows.map(e => e.join(","))].join("\n");
-    
+
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
@@ -59,14 +59,14 @@ export default function GuestList() {
 
   const filteredGuests = guests.filter(g => {
     const q = searchQuery.toLowerCase();
-    const matchSearch = q === "" || 
-      g.fullName.toLowerCase().includes(q) || 
-      g.phone.includes(q) || 
-      (g.email && g.email.toLowerCase().includes(q)) || 
+    const matchSearch = q === "" ||
+      g.fullName.toLowerCase().includes(q) ||
+      g.phone.includes(q) ||
+      (g.email && g.email.toLowerCase().includes(q)) ||
       (g.idNumber && g.idNumber.toLowerCase().includes(q));
 
     const matchCity = cityFilter === "all" || g.city === cityFilter;
-    
+
     let matchTag = true;
     if (tagFilter === "vip") matchTag = g.isVip;
     else if (tagFilter === "repeat") matchTag = (g.totalStays || 0) > 1;
@@ -78,7 +78,6 @@ export default function GuestList() {
   const cities = [...new Set(guests.map(g => g.city).filter(Boolean))];
 
   const totalCount = guests.length;
-  const vipCount = guests.filter(g => g.isVip).length;
   const repeatCount = guests.filter(g => (g.totalStays || 0) > 1).length;
   const spentSum = guests.reduce((sum, g) => sum + (g.totalSpent || 0), 0);
 
@@ -96,7 +95,7 @@ export default function GuestList() {
   };
 
   const getInitials = (name) => {
-    return name.split(" ").map(w => w[0]).join("").toUpperCase().slice(0,2);
+    return name.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2);
   };
 
   if (loading && guests.length === 0) {
@@ -105,7 +104,7 @@ export default function GuestList() {
 
   return (
     <div className="space-y-6 text-slate-800 animate-fade-in">
-      
+
       {/* Page Header */}
       <div className="pms-page-header">
         <div>
@@ -113,15 +112,15 @@ export default function GuestList() {
           <p className="pms-page-header-subtitle">Manage guest directory, histories, VIP designations, and contact logs</p>
         </div>
         <div className="flex items-center space-x-2 shrink-0">
-          <button 
+          <button
             onClick={handleExportCSV}
             className="border border-slate-200 hover:bg-slate-50 text-slate-600 px-3.5 py-2 rounded-lg text-xs font-semibold flex items-center space-x-1"
           >
             <Download className="h-3.5 w-3.5" />
             <span>Export CSV</span>
           </button>
-          
-          <button 
+
+          <button
             onClick={() => navigate("/guests/new")}
             className="bg-[#B71C1C] hover:bg-[#9B1515] text-white px-3.5 py-2 rounded-lg text-xs font-bold shadow flex items-center space-x-1.5"
           >
@@ -132,16 +131,10 @@ export default function GuestList() {
       </div>
 
       {/* STATS STRIP */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-premium flex flex-col justify-between">
           <span className="text-xs font-bold text-slate-400 uppercase">Total Registered Guests</span>
           <span className="text-2xl font-black text-slate-850 mt-2">{totalCount}</span>
-        </div>
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-premium flex flex-col justify-between">
-          <span className="text-xs font-bold text-slate-400 uppercase flex items-center">
-            <Award className="h-4 w-4 mr-1 text-[#B71C1C]" /> VIP Customers
-          </span>
-          <span className="text-2xl font-black text-slate-850 mt-2">{vipCount}</span>
         </div>
         <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-premium flex flex-col justify-between">
           <span className="text-xs font-bold text-slate-400 uppercase">Repeat stayers</span>
@@ -155,7 +148,7 @@ export default function GuestList() {
 
       {/* FILTER BAR */}
       <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-premium flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-        
+
         <div className="flex flex-wrap items-center gap-3">
           <div className="relative w-64">
             <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-slate-400" />
@@ -168,8 +161,8 @@ export default function GuestList() {
             />
           </div>
 
-          <select 
-            value={tagFilter} 
+          <select
+            value={tagFilter}
             onChange={(e) => setTagFilter(e.target.value)}
             className="text-xs bg-slate-50 border border-slate-200 rounded px-2.5 py-2 focus:outline-none focus:ring-1 focus:ring-red-600"
           >
@@ -179,8 +172,8 @@ export default function GuestList() {
             <option value="first">First Time Guests</option>
           </select>
 
-          <select 
-            value={cityFilter} 
+          <select
+            value={cityFilter}
             onChange={(e) => setCityFilter(e.target.value)}
             className="text-xs bg-slate-50 border border-slate-200 rounded px-2.5 py-2 focus:outline-none focus:ring-1 focus:ring-red-600"
           >
@@ -243,13 +236,13 @@ export default function GuestList() {
                     </div>
                   </td>
                   <td className="py-3 px-4 text-center space-x-2">
-                    <button 
+                    <button
                       onClick={() => navigate(`/guests/${guest.guestId}`)}
                       className="text-slate-500 hover:text-slate-700 font-semibold inline-flex items-center"
                     >
                       <Eye className="h-3.5 w-3.5 mr-0.5" /> Profile
                     </button>
-                    <button 
+                    <button
                       onClick={() => navigate(`/bookings/create?guestId=${guest.guestId}`)}
                       className="text-[#B71C1C] hover:text-[#9B1515] font-bold"
                     >

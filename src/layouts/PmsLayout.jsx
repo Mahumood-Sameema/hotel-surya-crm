@@ -18,17 +18,13 @@ import {
   Menu,
   ChevronLeft,
   ChevronRight,
-  Bell,
   Search,
   Plus,
-  X,
-  Wrench,
-  AlertTriangle
+  X
 } from "lucide-react";
 import { usePmsAuth } from "../context/PmsAuthContext";
 import {
   getNotifications,
-  markAllNotificationsRead,
   getGuests,
   getBookings,
   getRooms
@@ -44,7 +40,6 @@ export default function PmsLayout({ children }) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   // Header menus state
-  const [showNotifications, setShowNotifications] = useState(false);
   const [showQuickActions, setShowQuickActions] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
 
@@ -61,7 +56,6 @@ export default function PmsLayout({ children }) {
   const userMenuRef = useRef(null);
   const quickActionsRef = useRef(null);
   const searchRef = useRef(null);
-  const notifDrawerRef = useRef(null);
 
   // Fetch notifications periodically
   const fetchNotificationsData = async () => {
@@ -128,10 +122,7 @@ export default function PmsLayout({ children }) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleMarkAllRead = async () => {
-    await markAllNotificationsRead();
-    fetchNotificationsData();
-  };
+
 
   const handleSearchSelect = (path) => {
     setSearchQuery("");
@@ -419,17 +410,7 @@ export default function PmsLayout({ children }) {
                 )}
               </div>
 
-              <button
-                onClick={() => setShowNotifications(true)}
-                className="p-2 rounded-full hover:bg-slate-100 relative text-slate-600"
-              >
-                <Bell className="h-5 w-5" />
-                {unreadCount > 0 && (
-                  <span className="absolute top-1.5 right-1.5 h-4 w-4 rounded-full bg-red-600 text-white text-[10px] font-bold flex items-center justify-center animate-bounce">
-                    {unreadCount}
-                  </span>
-                )}
-              </button>
+
 
               <div ref={userMenuRef} className="relative">
                 <button
@@ -480,87 +461,7 @@ export default function PmsLayout({ children }) {
           </header>
         </div>
 
-        {/* 4. NOTIFICATION DRAWERS */}
-        {showNotifications && (
-          <div className="fixed inset-0 z-50 flex justify-end">
-            <div
-              onClick={() => setShowNotifications(false)}
-              className="fixed inset-0 bg-black/30 backdrop-blur-sm"
-            />
-            <div ref={notifDrawerRef} className="relative bg-white w-96 max-w-full h-full shadow-2xl flex flex-col z-50 border-l border-slate-200 text-slate-800 p-0 animate-fade-in">
-              <div className="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
-                <div className="flex items-center space-x-2">
-                  <Bell className="h-5 w-5 text-[#B71C1C]" />
-                  <h2 className="font-bold text-lg text-[#B71C1C]">System Alerts</h2>
-                </div>
-                <button
-                  onClick={() => setShowNotifications(false)}
-                  className="p-1 rounded-full hover:bg-slate-250"
-                >
-                  <X className="h-5 w-5" />
-                </button>
-              </div>
 
-              <div className="px-4 py-2 border-b border-slate-100 flex justify-between items-center bg-yellow-50/50">
-                <span className="text-xs font-semibold text-yellow-850">{unreadCount} pending review</span>
-                <button
-                  onClick={handleMarkAllRead}
-                  className="text-xs font-bold text-[#B71C1C] hover:underline"
-                >
-                  Mark All Read
-                </button>
-              </div>
-
-              <div className="flex-grow overflow-y-auto divide-y divide-slate-100">
-                {notifications.length === 0 ? (
-                  <div className="p-8 text-center text-slate-400">
-                    <Bell className="h-12 w-12 mx-auto mb-2 text-slate-200" />
-                    <p className="text-sm">No new notifications</p>
-                  </div>
-                ) : (
-                  notifications.map(n => {
-                    const isUnread = n.status === "Unread";
-                    return (
-                      <div
-                        key={n.id}
-                        className={`p-4 transition-colors ${isUnread ? "bg-amber-50/50 hover:bg-amber-100/30" : "hover:bg-slate-50"
-                          }`}
-                      >
-                        <div className="flex items-start space-x-3">
-                          <div className="mt-0.5">
-                            {n.type === "Room Maintenance Alert" ? (
-                              <Wrench className="h-5 w-5 text-slate-500" />
-                            ) : n.type === "System Alert" ? (
-                              <AlertTriangle className="h-5 w-5 text-red-500" />
-                            ) : (
-                              <Globe className="h-5 w-5 text-blue-500" />
-                            )}
-                          </div>
-                          <div className="flex-grow min-w-0 text-xs">
-                            <h4 className="font-bold text-slate-805 truncate">{n.title}</h4>
-                            <p className="text-slate-450 mt-0.5 leading-relaxed">{n.description}</p>
-                            <span className="text-[9px] text-slate-400 mt-2 block">
-                              {new Date(n.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - {new Date(n.timestamp).toLocaleDateString()}
-                            </span>
-                          </div>
-                          {n.link && (
-                            <Link
-                              to={n.link}
-                              onClick={() => setShowNotifications(false)}
-                              className="text-xs font-bold text-red-650 hover:text-red-700 shrink-0"
-                            >
-                              View
-                            </Link>
-                          )}
-                        </div>
-                      </div>
-                    );
-                  })
-                )}
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* 5. MAIN CONTENT WRAPPER */}
         <main className="flex-grow p-4 lg:p-6 overflow-y-auto overscroll-contain">
